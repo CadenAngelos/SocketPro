@@ -1,0 +1,22 @@
+body {
+	text-align: center;
+}
+
+h1 {
+	font-family: "Ranchers", cursive;
+	font-size: 100px;
+	letter-spacing: 10px;
+	color: #0e918c;
+}
+
+h2 {
+	font-family: "Lobster", cursive;
+	letter-spacing: 3px;
+	color: #f6830f;
+}
+
+p {
+	font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+		"Lucida Sans", Arial, sans-serif;
+	color: #bb2205;
+}
