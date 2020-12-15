@@ -26,7 +26,9 @@ def readRequest(Client):
 def ReadHTTPRequest(Server):
     re = ""
     while (re == ""):
+        print("preaccept")
         Client, address = Server.accept()
+        print("accepted")
         print("Client: ", address, " connected to server")
         re = readRequest(Client)
     return Client, re
@@ -35,16 +37,26 @@ def ReadHTTPRequest(Server):
 def SendFileIndex(Client):
     f = open("index.html", "rb")
     L = f.read()
-    header = """HTTP/1.1 200 OK     Content-length:%d""" % len(L)
+    header = """HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: %d\r\n\r\n"""%len(L)
     print("----------- HTTP response index.html: ")
     print(header)
     header += L.decode()
+    header += "\n\n\n"
     Client.send(bytes(header, 'utf-8'))
+    f.close()
+
+    #f = open("styleIndex.css", "rb")
+    #L = f.read()
+    #header = """HTTP/1.1 200 OK\r\nContent-Type: text/css\r\nContent-length: %d\r\n\r\n"""%len(L)
+    #print("----------- HTTP response styleIndex.css: ")
+    #print(header)
+    #header += L.decode()
+    #header += "\n\n\n"
+    #Client.send(bytes(header, 'utf-8'))
 
 
 def MovePageIndex(Client):
-    header = """HTTP/1.1 301 Moved Permanently
-    Location: http: // 127.0 .0 .1: 8081 / index.html """
+    header = """HTTP/1.1 301 Moved Permanently\r\nLocation: http://127.0.0.1:1235/index.html \n\n\n"""
     print(">")
     print("----------- HTTP response move Index.html:")
     print(header)
@@ -60,7 +72,7 @@ def MoveHomePage(Server, Client, Request):
         MovePageIndex(Client)
         Server.close()
 
-        Server = createServer("localhost", 8081)
+        Server = createServer("localhost", 1235)
         Client, Request = ReadHTTPRequest(Server)
         print("------------ HTTP request:")
         print(Request)
@@ -69,6 +81,7 @@ def MoveHomePage(Server, Client, Request):
 
 
 def CheckPass(Request):
+    print("CheckPass *********************************** " + Request)
     if "POST / HTTP/1.1" not in Request:
         return False
     if "Username=admin&Password=admin" in Request:
@@ -78,8 +91,7 @@ def CheckPass(Request):
 
 
 def Move404(Server, Client):
-    header = """HTTP/1.1 301 Moved Permanently
-    Location: http: // 127.0 .0 .1: 8082 / 404.html"""
+    header = """HTTP/1.1 301 Moved Permanently\r\nLocation: http://127.0.0.1:1236/404.html \n\n\n"""
     print("HTTP response: ")
     print(header)
     Client.send(bytes(header, "utf-8"))
@@ -89,19 +101,16 @@ def Move404(Server, Client):
 def SendFile404(Client):
     f = open("404.html", "rb")
     L = f.read()
-    header = """HTTP/1.1 404 Not Found
-    Content-Type: text/html; charset=UTF-8
-    Content-Encoding: UTF-8
-    Content-Length: %d
-    """ % len(L)
+    header = """HTTP/1.1 404 Not Found\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n"""%len(L)
     print("HTTP response file 404.html: ")
     print(header)
     header += L.decode()
+    header += "\n\n\n"
     Client.send(bytes(header, 'utf-8'))
 
 
 def Send404(Server, Client):
-    Server = createServer("localhost", 8082)
+    Server = createServer("localhost", 1236)
     Client, Request = ReadHTTPRequest(Server)
     print("HTTP Request: ")
     print(Request)
@@ -111,8 +120,7 @@ def Send404(Server, Client):
 
 
 def MoveInfo(Server, Client):
-    header = """HTTP/1.1 301 Moved Permanently
-    Location: http://127.0.0.1:8082/info.html
+    header = """HTTP/1.1 301 Moved Permanently\r\nLocation: http://127.0.0.1:1236/info.html \n\n\n
     """
     print("HTTP response: ")
     print(header)
@@ -123,31 +131,28 @@ def MoveInfo(Server, Client):
 def SendFileInfo(Client):
     f = open("info.html", "rb")
     L = f.read()
-    header = """HTTP/1.1 200 OK
-    Content-Type: text/html; charset=UTF-8
-    Content-Encoding: UTF-8
-    Content-Length: %d
-    """ % len(L)
+    header = """HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n"""%len(L)
     print("-------------HTTP response  info.html: ")
     print(header)
     header += L.decode()
+    header += "\n\n\n"
     Client.send(bytes(header, 'utf-8'))
 
 
 def SendInfo(Server, Client):
-    Server = createServer("localhost", 8082)
+    Server = createServer("localhost", 1236)
     Client, Request = ReadHTTPRequest(Server)
     print("HTTP Request: ")
     print(Request)
     if "GET /info.html HTTP/1.1" in Request:
-            SendFileInfo(Client)
-        Server.close()
+        SendFileInfo(Client)
+    Server.close()
 
 
 if __name__ == "__main__":
     print("Part 1: Return our homepage when a client visit our Server")
     # 1. Create server
-    Server = createServer("localhost", 8080)
+    Server = createServer("localhost", 1234)
 
     # 2. Client connect to Server
     Client, Request = ReadHTTPRequest(Server)
