@@ -26,9 +26,7 @@ def readRequest(Client):
 def ReadHTTPRequest(Server):
     re = ""
     while (re == ""):
-        print("preaccept")
         Client, address = Server.accept()
-        print("accepted")
         print("Client: ", address, " connected to server")
         re = readRequest(Client)
     return Client, re
@@ -44,16 +42,6 @@ def SendFileIndex(Client):
     header += "\n\n\n"
     Client.send(bytes(header, 'utf-8'))
     f.close()
-
-    #f = open("styleIndex.css", "rb")
-    #L = f.read()
-    #header = """HTTP/1.1 200 OK\r\nContent-Type: text/css\r\nContent-length: %d\r\n\r\n"""%len(L)
-    #print("----------- HTTP response styleIndex.css: ")
-    #print(header)
-    #header += L.decode()
-    #header += "\n\n\n"
-    #Client.send(bytes(header, 'utf-8'))
-
 
 def MovePageIndex(Client):
     header = """HTTP/1.1 301 Moved Permanently\r\nLocation: http://127.0.0.1:1235/index.html \n\n\n"""
@@ -81,10 +69,9 @@ def MoveHomePage(Server, Client, Request):
 
 
 def CheckPass(Request):
-    print("CheckPass *********************************** " + Request)
     if "POST / HTTP/1.1" not in Request:
         return False
-    if "Username=admin&Password=admin" in Request:
+    if "user-name=admin&password=admin" in Request:
         return True
     else:
         return False
