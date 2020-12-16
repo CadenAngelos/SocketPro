@@ -1,132 +1,60 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300&display=swap"
-			rel="stylesheet"
-		/>
-		<link rel="preconnect" href="https://fonts.gstatic.com" />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Lobster&display=swap"
-			rel="stylesheet"
-		/>
-		<link rel="preconnect" href="https://fonts.gstatic.com" />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap"
-			rel="stylesheet"
-		/>
-		<link rel="preconnect" href="https://fonts.gstatic.com" />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap"
-			rel="stylesheet"
-		/>
-		<!--><link rel="stylesheet" href="styleInfo.css" />-->
-		<style type="text/css">
-            * {
-                padding: 0;
-                margin: 0;
-                box-sizing: border-box;
-            }
-
-            body {
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
-            }
-
-            .flex-display {
-                font-size: 16px;
-            }
-
-            h1 {
-                font-family: "Inconsolata", monospace;
-                font-size: 50px;
-                text-align: center;
-                margin-top: 50px;
-                margin-bottom: 50px;
-                font-weight: lighter;
-            }
-
-            h2 {
-                font-family: "Lobster", cursive;
-                font-size: 40px;
-                font-family: "Lobster", cursive;
-                margin-bottom: 15px;
-            }
-
-            .container {
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-            }
-
-            .big-left {
-                margin-left: 20px;
-                float: left;
-            }
-
-            .big-right {
-                float: right;
-            }
-
-            .img {
-                border-radius: 50%;
-                float: left;
-            }
-
-            .info {
-                float: right;
-                margin-left: 40px;
-                font-size: 20px;
-                font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-                font-weight: 100;
-            }
-
-		</style>
-		<title>Our team info</title>
-	</head>
-	<body>
-		<h1>Members of our team</h1>
-
-		<div class="flex-display">
-			<div class="container">
-				<!-- CHI HAO HA-->
-				<div class="big-left">
-					<img
-						src="image/ch.png"
-						class="img HaoImg"
-						alt="Chi Hao's profile"
-					/>
-					<div class="info info-text-1">
-						<h2>Ha Chi Hao</h2>
-						<ul>
-							<li>Sophomore at University of Science</li>
-							<li>Funny, active, helpful.</li>
-							<li>Main skill: Unity 3D Master</li>
-							<li>Career orientation: Game Dev</li>
-						</ul>
-					</div>
-				</div>
-
-				<!-- QUYEN DE-->
-				<div class="big-right">
-					<img
-						src="image/qd.png"
-						class="img DeImg"
-						alt="Quyen De's profile"
-					/>
-					<div class="info info-text-2">
-						<h2>Trinh Quyen De</h2>
-						<ul>
-							<li>Learning at University of Science</li>
-							<li>Sociable, enthusiasm, flexible.</li>
-							<li>Main skill: Javascript.</li>
-							<li>Career orientation: Web Dev</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</body>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300&display=swap"
+          rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap"
+          rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap"
+          rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="styleInfo.css" />
+    <title>Our team info</title>
+</head>
+<body>
+    <h1>Members of our team</h1>
+    <div class="flex-display">
+        <div class="container">
+            <!--CHI HAO HA-->
+            <div class="big-left">
+                <img src="image/ch.png"
+                     class="img HaoImg"
+                     name="HaoImg"
+                     alt="Chi Hao's profile" />
+                <div class="info info-text-1">
+                    <h2>Ha Chi Hao</h2>
+                    <ul>
+                        <li>Sophomore at University of Science</li>
+                        <li>Funny, active, helpful.</li>
+                        <li>Main skill: Unity 3D Master</li>
+                        <li>Career orientation: Game Dev</li>
+                    </ul>
+                </div>
+            </div>
+            <!--QUYEN DE-->
+            <div class="big-right">
+                <img src="image/qd.png"
+                     class="img DeImg"
+                     name="DeImg"
+                     alt="Quyen De's profile" />
+                <div class="info info-text-2">
+                    <h2>Trinh Quyen De</h2>
+                    <ul>
+                        <li>Learning at University of Science</li>
+                        <li>Sociable, enthusiasm, flexible.</li>
+                        <li>Main skill: Javascript.</li>
+                        <li>Career orientation: Web Dev</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
 </html>

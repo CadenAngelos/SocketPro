@@ -36,6 +36,7 @@ h2 {
 .big-left {
 	margin-left: 20px;
 	float: left;
+	background-image: url(image/ch.png)
 }
 
 .big-right {

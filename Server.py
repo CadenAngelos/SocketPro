@@ -1,5 +1,6 @@
 # #%% console  shift enter
 import socket
+import time
 
 
 def createServer(host, port):
@@ -43,6 +44,20 @@ def SendFileIndex(Client):
     Client.send(bytes(header, 'utf-8'))
     f.close()
 
+def SendIndexCSS(Server, Client):
+    Client, Request = ReadHTTPRequest(Server)
+    print("HTTP Request: ")
+    print(Request)
+    if "GET /styleIndex.css HTTP/1.1" in Request:
+        f = open("styleIndex.css", "rb")
+        L = f.read()
+        header = """HTTP/1.1 200 OK\r\nContent-Type: text/css; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n"""%len(L)
+        print("-------------HTTP response  styleIndex.css: ")
+        print(header)
+        header += L.decode()
+        header += "\r\n"
+        Client.send(header.encode('utf-8')) 
+
 def MovePageIndex(Client):
     header = """HTTP/1.1 301 Moved Permanently\r\nLocation: http://127.0.0.1:1235/index.html \n\n\n"""
     print(">")
@@ -54,6 +69,7 @@ def MovePageIndex(Client):
 def MoveHomePage(Server, Client, Request):
     if "GET /index.html HTTP/1.1" in Request:
         SendFileIndex(Client)
+        SendIndexCSS(Server, Client)
         Server.close()
         return True
     if "GET / HTTP/1.1" in Request:
@@ -84,26 +100,33 @@ def Move404(Server, Client):
     Client.send(bytes(header, "utf-8"))
     Server.close()
 
-
-def SendFile404(Client):
-    f = open("404.html", "rb")
-    L = f.read()
-    header = """HTTP/1.1 404 Not Found\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n"""%len(L)
-    print("HTTP response file 404.html: ")
-    print(header)
-    header += L.decode()
-    header += "\n\n\n"
-    Client.send(bytes(header, 'utf-8'))
-
+def Send404CSS(Server, Client):
+    Client, Request = ReadHTTPRequest(Server)
+    print("HTTP Request: ")
+    print(Request)
+    if "GET /style404.css HTTP/1.1" in Request:
+        f = open("style404.css", "rb")
+        L = f.read()
+        header = """HTTP/1.1 200 OK\r\nContent-Type: text/css; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n"""%len(L)
+        print("-------------HTTP response  style404.css: ")
+        print(header)
+        header += L.decode()
+        header += "\r\n"
+        Client.send(header.encode('utf-8')) 
 
 def Send404(Server, Client):
-    Server = createServer("localhost", 1236)
     Client, Request = ReadHTTPRequest(Server)
     print("HTTP Request: ")
     print(Request)
     if "GET /404.html HTTP/1.1" in Request:
-        SendFile404(Client)
-    Server.close()
+        f = open("404.html", "rb")
+        L = f.read()
+        header = """HTTP/1.1 404 Not Found\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n"""%len(L)
+        print("HTTP response file 404.html: ")
+        print(header)
+        header += L.decode()
+        header += "\n\n\n"
+        Client.send(bytes(header, 'utf-8'))
 
 
 def MoveInfo(Server, Client):
@@ -114,27 +137,68 @@ def MoveInfo(Server, Client):
     Client.send(bytes(header, 'utf-8'))
     Server.close()
 
-
-def SendFileInfo(Client):
-    f = open("info.html", "rb")
-    L = f.read()
-    header = """HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n"""%len(L)
-    print("-------------HTTP response  info.html: ")
-    print(header)
-    header += L.decode()
-    header += "\n\n\n"
-    Client.send(bytes(header, 'utf-8'))
-
-
 def SendInfo(Server, Client):
-    Server = createServer("localhost", 1236)
     Client, Request = ReadHTTPRequest(Server)
     print("HTTP Request: ")
     print(Request)
     if "GET /info.html HTTP/1.1" in Request:
-        SendFileInfo(Client)
-    Server.close()
+        f = open("info.html", "rb")
+        L = f.read()
+        header = """HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n"""%len(L)
+        print("-------------HTTP response  info.html: ")
+        print(header)
+        header += L.decode()
+        header += "\n\n\n"
+        Client.send(bytes(header, 'utf-8'))
 
+
+def SendInfoCSS(Server, Client):
+    Client, Request = ReadHTTPRequest(Server)
+    print("HTTP Request: ")
+    print(Request)
+    if "GET /styleInfo.css HTTP/1.1" in Request:
+        f = open("styleIndex.css", "rb")
+        L = f.read()
+        header = """HTTP/1.1 200 OK\r\nContent-Type: text/css; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n"""%len(L)
+        print("-------------HTTP response  styleIndex.css: ")
+        print(header)
+        header += L.decode()
+        header += "\r\n"
+        Client.send(header.encode('utf-8')) 
+
+def SendImage(Server, Client):
+    Client, Request = ReadHTTPRequest(Server)
+    print("HTTP Request: ")
+    print(Request)
+    if "GET /image/ch.png HTTP/1.1" in Request:
+        f = open("image/ch.png", "rb")
+        L = f.read()
+        f.close()
+        header = """HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nContent-Length: %d\r\n\r\n"""%len(L)
+        print("-------------HTTP response  ch.png: ")
+        print(header)
+        header = header.encode('utf-8') + L + "\r\n".encode('utf-8')
+        Client.send(header)
+
+    if "GET /image/qd.png HTTP/1.1" in Request:
+        f = open("image/qd.png", "rb")
+        L = f.read()
+        f.close()
+        header = """HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nContent-Length: %d\r\n\r\n"""%len(L)
+        print("-------------HTTP response  qd.png: ")
+        print(header)
+        header = header.encode('utf-8') + L + "\r\n".encode('utf-8')
+        Client.send(header)
+
+    if "GET /favicon.ico HTTP/1.1" in Request:
+        f = open("image/ch.ico", "rb")
+        L = f.read()
+        f.close()
+        header = """HTTP/1.1 200 OK\r\nContent-Type: image/ico\r\nContent-Length: %d\r\n\r\n"""%len(L)
+        print("-------------HTTP response  favicon.ico: ")
+        print(header)
+        header = header.encode('utf-8') + L + "\r\n".encode('utf-8')
+        Client.send(header)
 
 if __name__ == "__main__":
     print("Part 1: Return our homepage when a client visit our Server")
@@ -154,9 +218,23 @@ if __name__ == "__main__":
     Client, Request = ReadHTTPRequest(Server)
     print("-------------- HTTP request: ")
     print(Request)
+
     if CheckPass(Request) == True:
         MoveInfo(Server, Client)
+
+        Server = createServer("localhost", 1236)
         SendInfo(Server, Client)
+        SendInfoCSS(Server, Client)
+        SendImage(Server, Client)
+        SendImage(Server, Client)
+        SendImage(Server, Client)
+        Server.close()
+
     else:
         Move404(Server, Client)
+
+        Server = createServer("localhost", 1236)
         Send404(Server, Client)
+        Send404CSS(Server, Client)
+
+        Server.close()
