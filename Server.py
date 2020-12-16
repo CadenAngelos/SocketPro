@@ -35,7 +35,8 @@ def ReadHTTPRequest(Server):
 def SendFileIndex(Client):
     f = open("index.html", "rb")
     L = f.read()
-    header = """HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: %d\r\n\r\n"""%len(L)
+    header = """HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: %d\r\n\r\n""" % len(
+        L)
     print("----------- HTTP response index.html: ")
     print(header)
     header += L.decode()
@@ -43,10 +44,11 @@ def SendFileIndex(Client):
     Client.send(bytes(header, 'utf-8'))
     f.close()
 
+
 def MovePageIndex(Client):
     header = """HTTP/1.1 301 Moved Permanently\r\nLocation: http://127.0.0.1:1235/index.html \n\n\n"""
     print(">")
-    print("----------- HTTP response move Index.html:")
+    print("----------- HTTP response move index.html:")
     print(header)
     Client.send(bytes(header, 'utf-8'))
 
@@ -88,7 +90,8 @@ def Move404(Server, Client):
 def SendFile404(Client):
     f = open("404.html", "rb")
     L = f.read()
-    header = """HTTP/1.1 404 Not Found\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n"""%len(L)
+    header = """HTTP/1.1 404 Not Found\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n""" % len(
+        L)
     print("HTTP response file 404.html: ")
     print(header)
     header += L.decode()
@@ -118,7 +121,8 @@ def MoveInfo(Server, Client):
 def SendFileInfo(Client):
     f = open("info.html", "rb")
     L = f.read()
-    header = """HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n"""%len(L)
+    header = """HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: UTF-8\r\nContent-Length: %d\r\n\r\n""" % len(
+        L)
     print("-------------HTTP response  info.html: ")
     print(header)
     header += L.decode()

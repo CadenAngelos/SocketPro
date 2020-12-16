@@ -1,104 +1,40 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="UTF-8"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-		<link rel="preconnect" href="https://fonts.gstatic.com"/>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Nerko+One&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
 			rel="stylesheet"
 		/>
-		<link rel="preconnect" href="https://fonts.gstatic.com"/>
-		<link rel="preconnect" href="https://fonts.gstatic.com"/>
-		<link
-			href="https://fonts.googleapis.com/css2?family=Nerko+One&family=Source+Sans+Pro:ital,wght@1,300&display=swap"
-			rel="stylesheet"
-		/>
-		<!--<link rel="stylesheet" href="styleIndex.css"/>-->
-		<style type="text/css">
-            * {
-                padding: 0;
-                margin: 0;
-                box-sizing: border-box;
-            }
+		<link rel="stylesheet" href="styleIndex.css" />
 
-            body {
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
-            }
-
-            .flex-display {
-                font-size: 16px;
-            }
-
-            h1 {
-                font-family: "Inconsolata", monospace;
-                font-size: 50px;
-                text-align: center;
-                margin-top: 50px;
-                margin-bottom: 50px;
-                font-weight: lighter;
-            }
-
-            h2 {
-                font-family: "Lobster", cursive;
-                font-size: 40px;
-                font-family: "Lobster", cursive;
-                margin-bottom: 15px;
-            }
-
-            .container {
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-            }
-
-            .big-left {
-                margin-left: 20px;
-                float: left;
-            }
-
-            .big-right {
-                float: right;
-            }
-
-            .img {
-                border-radius: 50%;
-                float: left;
-            }
-
-            .info {
-                float: right;
-                margin-left: 40px;
-                font-size: 20px;
-                font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-                font-weight: 100;
-            }
-
-		</style>
 		<title>FORM</title>
 	</head>
 	<body>
-		<h1>LOGIN FORM</h1>
-		<div class="form" align="center">
-			<form action="http://127.0.0.1:10000" method="post">
-				<label for="user-name" class="user-name">Username</label><br/>
-				<input
-					type="text"
-					id="user-name"
-					name="user-name"
-					placeholder="Enter Username"
-				/><br/>
+		<div class="full-form">
+			<h3>LOGIN</h3>
+			<div class="form">
+				<form action="http://127.0.0.1:10000" method="post">
+					<i class="fas fa-user"></i>
+					<input
+						type="text"
+						id="user-name"
+						name="user-name"
+						placeholder="Enter Username"
+					/><br />
 
-				<label for="password" class="password">Password</label><br/>
-				<input
-					type="text"
-					id="password"
-					name="password"
-					placeholder="Enter Password"
-				/><br/>
+					<input
+						type="text"
+						id="password"
+						name="password"
+						placeholder="Enter Password"
+					/><br />
 
-				<input type="submit" class="cta-btn" value="Login"/>
-			</form>
+					<input type="submit" class="cta-btn" value="LOGIN" />
+				</form>
+			</div>
 		</div>
 	</body>
 </html>
