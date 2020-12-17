@@ -1,6 +1,7 @@
 # #%% console shift enter
 import socket
 
+
 def createServer(host, port):
     Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     Server.bind((host, port))
@@ -30,10 +31,11 @@ def ReadHTTPRequest(Server):
         re = readRequest(Client)
     return Client, re
 
+
 def MoveHomePage(Server, Client, Request):
     if "GET /index.html HTTP/1.1" in Request:
-        SendFile(Client, Request, GetFileNameFromRequest(Request)) #index.html
-        ReadRequestAndSendFile(Server) #styleIndex.css
+        SendFile(Client, Request, GetFileNameFromRequest(Request))  # index.html
+        ReadRequestAndSendFile(Server)  # styleIndex.css
         Server.close()
         return True
     if "GET / HTTP/1.1" in Request:
@@ -47,6 +49,7 @@ def MoveHomePage(Server, Client, Request):
         MoveHomePage(Server, Client, Request)
         return True
 
+
 def CheckPass(Request):
     if "POST / HTTP/1.1" not in Request:
         return False
@@ -55,8 +58,10 @@ def CheckPass(Request):
     else:
         return False
 
+
 def GetFileNameFromRequest(Request):
-    return Request[5:Request.find(" HTTP/1.1")] #GET /file.html HTTP/1.1...
+    return Request[5:Request.find(" HTTP/1.1")]  # GET /file.html HTTP/1.1...
+
 
 def MoveToPage(Server, Client, location):
     header = "HTTP/1.1 301 Moved Permanently\r\nLocation: "
@@ -67,11 +72,13 @@ def MoveToPage(Server, Client, location):
     Client.send(bytes(header, 'utf-8'))
     Server.close()
 
+
 def ReadRequestAndSendFile(Server):
     Client, Request = ReadHTTPRequest(Server)
     print("-------------HTTP Request: ")
     print(Request)
     SendFile(Client, Request, GetFileNameFromRequest(Request))
+
 
 def SendFile(Client, Request, fileName):
     if "GET /" + fileName + " HTTP/1.1" in Request:
@@ -91,6 +98,7 @@ def SendFile(Client, Request, fileName):
         print(header)
 
         Client.send(header.encode('utf-8') + L + "\r\n".encode('utf-8'))
+
 
 if __name__ == "__main__":
     print("Part 1: Return our homepage when a client visit our Server")
@@ -115,8 +123,8 @@ if __name__ == "__main__":
         MoveToPage(Server, Client, "http://127.0.0.1:1236/info.html")
 
         Server = createServer("localhost", 1236)
-        ReadRequestAndSendFile(Server) #info.html
-        ReadRequestAndSendFile(Server) #styleInfo.css
+        ReadRequestAndSendFile(Server)  # info.html
+        ReadRequestAndSendFile(Server)  # styleInfo.css
         # 3 cái request dưới đây là ch.png, qd.png và favicon.ico, nhưng thứ tự không giữ nguyên mỗi lần chạy
         ReadRequestAndSendFile(Server)
         ReadRequestAndSendFile(Server)
@@ -127,6 +135,6 @@ if __name__ == "__main__":
         MoveToPage(Server, Client, "http://127.0.0.1:1236/404.html")
 
         Server = createServer("localhost", 1236)
-        ReadRequestAndSendFile(Server)  #404.html
-        ReadRequestAndSendFile(Server)  #style404.css
+        ReadRequestAndSendFile(Server)  # 404.html
+        ReadRequestAndSendFile(Server)  # style404.css
         Server.close()
