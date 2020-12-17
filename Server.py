@@ -83,7 +83,7 @@ def ReadRequestAndSendFile(Server, isChunked):
         fileName = GetFileNameFromRequest(Request)
         if isChunked:
             SendChunkedFile(Client, Request, fileName)
-		else:
+        else:
             SendFile(Client, Request, fileName)
 
 def SendFile(Client, Request, fileName):
