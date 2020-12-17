@@ -63,7 +63,6 @@ def CheckPass(Request):
 def GetFileNameFromRequest(Request):
     return Request[5:Request.find(" HTTP/1.1")]  # GET /file.html HTTP/1.1...
 
-
 def MoveToPage(Server, Client, location):
     header = "HTTP/1.1 301 Moved Permanently\r\nLocation: "
     header += location
@@ -105,37 +104,48 @@ def SendFile(Client, Request, fileName):
     Client.send(header.encode('utf-8') + L + "\r\n".encode('utf-8'))
 
 def SendChunkedFile(Client, Request, fileName):
-    extension = fileName.split('.')[1]
+    splittedFileName = fileName.split('.')
+    extension = splittedFileName[len(splittedFileName) - 1] #lấy phần sau dấu chấm cuối cùng
 
     header = "HTTP/1.1 200 OK\r\nContent-Type: "
-    if extension == "pdf":
-        header += "application/"
-    elif extension == "html" or extension == "css" or extension == "pptx":
-        header += "text/"
-    else:
-        header += "image/"
-    header += extension
+    extensionMIMEType = {
+                'png':'image/png',
+                'jpg':'image/jpeg',
+                'jpeg':'image/jpeg',
+                'pptx':'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                'ppt':'application/vnd.ms-powerpoint',
+                'pdf':'application/pdf',
+                'mp3':'audio/mpeg',
+                'mp4':'video/mp4',
+                'gif':'image/gif',
+                'wav':'audio/wav',
+                'docx':'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'xls':'application/vnd.ms-excel',
+                'xlsx':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+             }
+
+    header += extensionMIMEType.get(extension)
     header += "\r\nTransfer-Encoding: chunked\r\n\r\n"
     print("-------------HTTP response " + fileName + ": ")
     print(header)
 
-    BUFFER_SIZE = 2048
+    BUFFER_SIZE = 1024 * 1024
     f = open(fileName, "rb")
     currentChunk = f.read(BUFFER_SIZE)
     fileBytes = "".encode('utf-8')
 
     while len(currentChunk) == BUFFER_SIZE:
-        fileBytes += ("%X\r\n"%BUFFER_SIZE).encode('utf-8') #kích thước của chunk phải truyền dưới dạng hex
+        fileBytes += ("%X\r\n" % BUFFER_SIZE).encode('utf-8') #kích thước của chunk phải truyền dưới dạng hex
         fileBytes += currentChunk
         fileBytes += "\r\n".encode('utf-8')
         currentChunk = f.read(BUFFER_SIZE)
     f.close()
     #phần còn lại
     remainingSize = len(currentChunk)
-    fileBytes += ("%X\r\n"%remainingSize).encode('utf-8')
+    fileBytes += ("%X\r\n" % remainingSize).encode('utf-8')
     fileBytes += currentChunk
     fileBytes += "\r\n".encode('utf-8')
-    fileBytes += ("%X\r\n"%0).encode('utf-8')   #chunk kết thúc "0\r\n"
+    fileBytes += ("%X\r\n" % 0).encode('utf-8')   #chunk kết thúc "0\r\n"
 
     Client.send(header.encode('utf-8') + fileBytes + "\r\n".encode('utf-8'))
 
