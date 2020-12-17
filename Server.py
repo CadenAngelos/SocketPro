@@ -2,6 +2,7 @@
 import socket
 import time
 
+
 def createServer(host, port):
     Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     Server.bind((host, port))
@@ -31,10 +32,11 @@ def ReadHTTPRequest(Server):
         re = readRequest(Client)
     return Client, re
 
+
 def MoveHomePage(Server, Client, Request):
     if "GET /index.html HTTP/1.1" in Request:
-        SendFile(Client, Request, GetFileNameFromRequest(Request)) #index.html
-        ReadRequestAndSendFile(Server) #styleIndex.css
+        SendFile(Client, Request, GetFileNameFromRequest(Request))  # index.html
+        ReadRequestAndSendFile(Server)  # styleIndex.css
         Server.close()
         return True
     if "GET / HTTP/1.1" in Request:
@@ -48,6 +50,7 @@ def MoveHomePage(Server, Client, Request):
         MoveHomePage(Server, Client, Request)
         return True
 
+
 def CheckPass(Request):
     if "POST / HTTP/1.1" not in Request:
         return False
@@ -56,8 +59,10 @@ def CheckPass(Request):
     else:
         return False
 
+
 def GetFileNameFromRequest(Request):
-    return Request[5:Request.find(" HTTP/1.1")] #GET /file.html HTTP/1.1...
+    return Request[5:Request.find(" HTTP/1.1")]  # GET /file.html HTTP/1.1...
+
 
 def MoveToPage(Server, Client, location):
     header = "HTTP/1.1 301 Moved Permanently\r\nLocation: "
@@ -69,6 +74,7 @@ def MoveToPage(Server, Client, location):
     Server.close()
 
 def ReadRequestAndSendFile(Server, isChunked):
+
     Client, Request = ReadHTTPRequest(Server)
     print("-------------HTTP Request: ")
     print(Request)
@@ -77,7 +83,7 @@ def ReadRequestAndSendFile(Server, isChunked):
         fileName = GetFileNameFromRequest(Request)
         if isChunked:
             SendChunkedFile(Client, Request, fileName)
-        else:
+		else:
             SendFile(Client, Request, fileName)
 
 def SendFile(Client, Request, fileName):
@@ -133,6 +139,7 @@ def SendChunkedFile(Client, Request, fileName):
 
     Client.send(header.encode('utf-8') + fileBytes + "\r\n".encode('utf-8'))
 
+
 if __name__ == "__main__":
     print("Part 1: Return our homepage when a client visit our Server")
     # 1.  Create server
@@ -153,9 +160,8 @@ if __name__ == "__main__":
         ReadRequestAndSendFile(Server, False)   #favicon.ico
         while True:
             ReadRequestAndSendFile(Server, True)    #đợi cái href được bấm thì gửi đúng file
+
         Server.close()
-
-
 
     # 3.  Response then close server
     #MoveHomePage(Server, Client, Request)
