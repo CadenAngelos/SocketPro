@@ -11,6 +11,7 @@ body {
 .flex-display {
 	font-size: 16px;
 }
+
 h1 {
 	font-family: "Inconsolata", monospace;
 	font-size: 50px;
@@ -55,14 +56,35 @@ h2 {
 	font-weight: 100;
 }
 
-.cta-btn {
-	margin-top: 30px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	width: 100%;
-	font-size: 10px;
-	background-color: #31326f;
-	border: 0;
+.dowload {
+	/*display: inline-block;*/
+	position: absolute;
+	left: 40%;
+	text-align: center;
+	margin-top: 40px;
+	text-decoration: none;
+
+	background-color: white;
+	border-radius: 5px;
+	border: solid 1px #21209c;
+	color: #21209c;
+	padding: 8px 18px;
+	font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+		sans-serif;
+	transition: 1s;
+}
+.dowload:hover {
+	background-color: #150485;
 	color: white;
+	font-weight: lighter;
+	border-color: white;
+
+	transition-timing-function: ease-in-out;
+	font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+		sans-serif;
+}
+
+input[type="submit"] {
+	font-size: 20px;
 	font-weight: lighter;
 }
