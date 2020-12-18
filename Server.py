@@ -2,6 +2,7 @@
 import socket
 import time
 
+IP = ""
 
 def createServer(host, port):
     Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -36,14 +37,13 @@ def ReadHTTPRequest(Server):
 def MoveHomePage(Server, Client, Request):
     if "GET /index.html HTTP/1.1" in Request:
         SendFile(Client, Request, GetFileNameFromRequest(Request))  # index.html
-        ReadRequestAndSendFile(Server)  # styleIndex.css
-        Server.close()
+        ReadRequestAndSendFile(Server, False)  # styleIndex.css
+        ReadRequestAndSendFile(Server, False)  # favicon.ico
         return True
     if "GET / HTTP/1.1" in Request:
-        MoveToPage(Server, Client, "http://127.0.0.1:1235/index.html")
-        Server.close()
+        MoveToPage(Server, Client, "http://" + IP + ":1234/index.html")
 
-        Server = createServer("localhost", 1235)
+        
         Client, Request = ReadHTTPRequest(Server)
         print("------------ HTTP request:")
         print(Request)
@@ -52,9 +52,7 @@ def MoveHomePage(Server, Client, Request):
 
 
 def CheckPass(Request):
-    if "POST / HTTP/1.1" not in Request:
-        return False
-    if "user-name=admin&password=admin" in Request:
+    if  "POST" in Request and "HTTP/1.1" in Request and "user-name=admin&password=admin" in Request:
         return True
     else:
         return False
@@ -62,7 +60,6 @@ def CheckPass(Request):
 
 def GetFileNameFromRequest(Request):
     return Request[5:Request.find(" HTTP/1.1")]  # GET /file.html HTTP/1.1...
-
 def MoveToPage(Server, Client, location):
     header = "HTTP/1.1 301 Moved Permanently\r\nLocation: "
     header += location
@@ -70,7 +67,7 @@ def MoveToPage(Server, Client, location):
     print("HTTP response: ")
     print(header)
     Client.send(bytes(header, 'utf-8'))
-    Server.close()
+    
 
 def ReadRequestAndSendFile(Server, isChunked):
 
@@ -149,55 +146,61 @@ def SendChunkedFile(Client, Request, fileName):
 
     Client.send(header.encode('utf-8') + fileBytes + "\r\n".encode('utf-8'))
 
+def CheckButtonPress(Request):
+    if  "POST" in Request and "HTTP/1.1" in Request:
+        return True
+    else:
+        return False
 
 if __name__ == "__main__":
+    print("Enter your IP address: ")
+    IP = input()
     print("Part 1: Return our homepage when a client visit our Server")
     # 1.  Create server
-    Server = createServer("localhost", 1234)
+    Server = createServer(IP, 1234)
 
     # 2.  Client connect to Server
     Client, Request = ReadHTTPRequest(Server)
     print("-------------HTTP request: ")
     print(Request)
-    
-    #Test chunked
-    if "GET / HTTP/1.1" in Request:
-        MoveToPage(Server, Client, "http://127.0.0.1:1235/files.html")
-        Server.close()
-
-        Server = createServer("localhost", 1235)
-        ReadRequestAndSendFile(Server, False)   #files.html
-        ReadRequestAndSendFile(Server, False)   #favicon.ico
-        while True:
-            ReadRequestAndSendFile(Server, True)    #đợi cái href được bấm thì gửi đúng file
-
-        Server.close()
 
     # 3.  Response then close server
-    #MoveHomePage(Server, Client, Request)
+    MoveHomePage(Server, Client, Request)
 
-    #print("Part 2: Username and password handling")
-    #Server = createServer("localhost", 10000)
-    #Client, Request = ReadHTTPRequest(Server)
-    #print("-------------- HTTP request: ")
-    #print(Request)
+    print("Part 2: Username and password handling")
+    Client, Request = ReadHTTPRequest(Server)
+    print("-------------- HTTP request: ")
+    print(Request)
 
-    #if CheckPass(Request) == True:
-    #    MoveToPage(Server, Client, "http://127.0.0.1:1236/info.html")
+    if CheckPass(Request) == True:
+        MoveToPage(Server, Client, "http://" + IP + ":1234/info.html")
+        
+        ReadRequestAndSendFile(Server, False) #info.html
+        ReadRequestAndSendFile(Server, False) #styleInfo.css
+        # 3 cái request dưới đây là ch.png, qd.png và favicon.ico, nhưng thứ tự
+                                                     # không giữ nguyên mỗi lần chạy
+        ReadRequestAndSendFile(Server, False)
+        ReadRequestAndSendFile(Server, False)
+        ReadRequestAndSendFile(Server, False)
+        
+        Client, Request = ReadHTTPRequest(Server)
+        print("-------------- HTTP request: ")
+        print(Request)
+        if CheckButtonPress(Request) == True:
+            MoveToPage(Server, Client, "http://" + IP + ":1234/files.html")
+            
+            ReadRequestAndSendFile(Server, False)   #files.html
+            #ReadRequestAndSendFile(Server, False)   #styleFiles.css
+            ReadRequestAndSendFile(Server, False)   #favicon.ico
+            while True:
+                ReadRequestAndSendFile(Server, True) #gửi file được bấm theo kiểu chunked
+        
 
-    #    Server = createServer("localhost", 1236)
-    #    ReadRequestAndSendFile(Server) #info.html
-    #    ReadRequestAndSendFile(Server) #styleInfo.css
-    #    # 3 cái request dưới đây là ch.png, qd.png và favicon.ico, nhưng thứ tự không giữ nguyên mỗi lần chạy
-    #    ReadRequestAndSendFile(Server)
-    #    ReadRequestAndSendFile(Server)
-    #    ReadRequestAndSendFile(Server)
-    #    Server.close()
+    else:
+        MoveToPage(Server, Client, "http://" + IP + ":1234/404.html")
 
-    #else:
-    #    MoveToPage(Server, Client, "http://127.0.0.1:1236/404.html")
+        ReadRequestAndSendFile(Server, False)  #404.html
+        ReadRequestAndSendFile(Server, False)  #style404.css
 
-    #    Server = createServer("localhost", 1236)
-    #    ReadRequestAndSendFile(Server)  #404.html
-    #    ReadRequestAndSendFile(Server)  #style404.css
-    #    Server.close()
+    Server.close()
+        

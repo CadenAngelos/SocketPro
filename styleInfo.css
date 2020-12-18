@@ -54,3 +54,15 @@ h2 {
 	font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
 	font-weight: 100;
 }
+
+.cta-btn {
+	margin-top: 30px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	width: 100%;
+	font-size: 10px;
+	background-color: #31326f;
+	border: 0;
+	color: white;
+	font-weight: lighter;
+}
