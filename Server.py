@@ -1,6 +1,6 @@
 # #%% console shift enter
 import socket
-import time
+import os
 
 IP = ""
 
@@ -35,19 +35,18 @@ def ReadHTTPRequest(Server):
 
 
 def MoveHomePage(Server, Client, Request):
-    if "GET /index.html HTTP/1.1" in Request:
-        SendFile(Client, Request, GetFileNameFromRequest(Request))  # index.html
-        ReadRequestAndSendFile(Server, False)  # styleIndex.css
-        ReadRequestAndSendFile(Server, False)  # favicon.ico
-        return True
     if "GET / HTTP/1.1" in Request:
-        MoveToPage(Server, Client, "http://" + IP + ":1234/index.html")
+        MoveToPage(Client, "http://" + IP + ":1234/index.html")
 
-        
         Client, Request = ReadHTTPRequest(Server)
         print("------------ HTTP request:")
         print(Request)
         MoveHomePage(Server, Client, Request)
+        return True
+    if "GET /index.html HTTP/1.1" in Request:
+        SendFile(Client, GetFileNameFromRequest(Request))  # index.html
+        ReadRequestAndSendFile(Server, False)  # styleIndex.css
+        ReadRequestAndSendFile(Server, False)  # favicon.ico
         return True
 
 
@@ -60,7 +59,17 @@ def CheckPass(Request):
 
 def GetFileNameFromRequest(Request):
     return Request[5:Request.find(" HTTP/1.1")]  # GET /file.html HTTP/1.1...
-def MoveToPage(Server, Client, location):
+
+def GetExtension(fileName):
+    splittedFileName = fileName.split('.')
+    return splittedFileName[len(splittedFileName) - 1]  #lấy phần sau dấu chấm cuối cùng
+
+def GetFileNameOnly(fileName):
+    extension = GetExtension(fileName)
+    result = fileName.replace("."+extension, '')
+    return result
+
+def MoveToPage(Client, location):
     header = "HTTP/1.1 301 Moved Permanently\r\nLocation: "
     header += location
     header += "\n\n\n"
@@ -78,15 +87,37 @@ def ReadRequestAndSendFile(Server, isChunked):
     if "GET /" in Request and " HTTP/1.1" in Request:
         fileName = GetFileNameFromRequest(Request)
         if isChunked:
-            SendChunkedFile(Client, Request, fileName)
+            SendChunkedFile(Client, fileName)
         else:
-            SendFile(Client, Request, fileName)
+            SendFile(Client, fileName)
 
-def SendFile(Client, Request, fileName):
-    f = open(fileName, "rb")
-    L = f.read()
-    f.close()
-    extension = fileName.split('.')[1]
+def SendFile(Client, fileName):
+    L = ""
+    if fileName == "files.html":
+        #nếu file cần gửi là files.html thì hiện các file theo thư mục download
+        L = """<!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link rel="stylesheet" href="styleFiles.css" />
+                    <title>Files</title>
+                </head>
+                <body>
+                    <h2>List files</h2>
+                    <ul>"""
+        for filename in os.listdir("download"):
+            L += "<li><a href=\"download/"+filename+"\" download=\""+filename+"\">"
+            L += GetFileNameOnly(filename)+" ("+GetExtension(filename)+")</a></li>\n"
+        L += "</ul></body></html>"
+        print(L)
+        L = L.encode('utf-8')
+    else:
+        f = open(fileName, "rb")
+        L = f.read()
+        f.close()
+
+    extension = GetExtension(fileName)
 
     header = "HTTP/1.1 200 OK\r\nContent-Type: "
     if extension == "html" or extension == "css":
@@ -100,12 +131,13 @@ def SendFile(Client, Request, fileName):
 
     Client.send(header.encode('utf-8') + L + "\r\n".encode('utf-8'))
 
-def SendChunkedFile(Client, Request, fileName):
-    splittedFileName = fileName.split('.')
-    extension = splittedFileName[len(splittedFileName) - 1] #lấy phần sau dấu chấm cuối cùng
+def SendChunkedFile(Client, fileName):
+    extension = GetExtension(fileName)
+    print('Extension: ' + extension)
 
     header = "HTTP/1.1 200 OK\r\nContent-Type: "
     extensionMIMEType = {
+                'txt':'text/plain',
                 'png':'image/png',
                 'jpg':'image/jpeg',
                 'jpeg':'image/jpeg',
@@ -139,9 +171,10 @@ def SendChunkedFile(Client, Request, fileName):
     f.close()
     #phần còn lại
     remainingSize = len(currentChunk)
-    fileBytes += ("%X\r\n" % remainingSize).encode('utf-8')
-    fileBytes += currentChunk
-    fileBytes += "\r\n".encode('utf-8')
+    if remainingSize > 0:
+        fileBytes += ("%X\r\n" % remainingSize).encode('utf-8')
+        fileBytes += currentChunk
+        fileBytes += "\r\n".encode('utf-8')
     fileBytes += ("%X\r\n" % 0).encode('utf-8')   #chunk kết thúc "0\r\n"
 
     Client.send(header.encode('utf-8') + fileBytes + "\r\n".encode('utf-8'))
@@ -153,6 +186,7 @@ def CheckButtonPress(Request):
         return False
 
 if __name__ == "__main__":
+
     print("Enter your IP address: ")
     IP = input()
     print("Part 1: Return our homepage when a client visit our Server")
@@ -173,7 +207,7 @@ if __name__ == "__main__":
     print(Request)
 
     if CheckPass(Request) == True:
-        MoveToPage(Server, Client, "http://" + IP + ":1234/info.html")
+        MoveToPage(Client, "http://" + IP + ":1234/info.html")
         
         ReadRequestAndSendFile(Server, False) #info.html
         ReadRequestAndSendFile(Server, False) #styleInfo.css
@@ -187,17 +221,16 @@ if __name__ == "__main__":
         print("-------------- HTTP request: ")
         print(Request)
         if CheckButtonPress(Request) == True:
-            MoveToPage(Server, Client, "http://" + IP + ":1234/files.html")
+            MoveToPage(Client, "http://" + IP + ":1234/files.html")
             
             ReadRequestAndSendFile(Server, False)   #files.html
-            #ReadRequestAndSendFile(Server, False)   #styleFiles.css
+            ReadRequestAndSendFile(Server, False)   #styleFiles.css
             ReadRequestAndSendFile(Server, False)   #favicon.ico
             while True:
                 ReadRequestAndSendFile(Server, True) #gửi file được bấm theo kiểu chunked
         
-
     else:
-        MoveToPage(Server, Client, "http://" + IP + ":1234/404.html")
+        MoveToPage(Client, "http://" + IP + ":1234/404.html")
 
         ReadRequestAndSendFile(Server, False)  #404.html
         ReadRequestAndSendFile(Server, False)  #style404.css
