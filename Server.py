@@ -58,7 +58,7 @@ def CheckPass(Request):
 
 
 def GetFileNameFromRequest(Request):
-    return Request[5:Request.find(" HTTP/1.1")]  # GET /file.html HTTP/1.1...
+    return Request[5:Request.find(" HTTP/1.1")]  # GET /files.html HTTP/1.1...
 
 def GetExtension(fileName):
     splittedFileName = fileName.split('.')
@@ -133,7 +133,6 @@ def SendFile(Client, fileName):
 
 def SendChunkedFile(Client, fileName):
     extension = GetExtension(fileName)
-    print('Extension: ' + extension)
 
     header = "HTTP/1.1 200 OK\r\nContent-Type: "
     extensionMIMEType = {
